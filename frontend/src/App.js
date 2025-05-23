@@ -1,21 +1,29 @@
 
-import React from 'react'
+import React, { useState } from 'react'
+import api from './services/api'
 import './App.css'
 import logo from './assets/logo.svg'
 
+import AppRoutes from './routes'
+
 function App() {
+  const [email, setEmail] = useState('')
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+
+    const response = await api.post('/sessions', { email })
+    const { _id } = response.data
+    localStorage.setItem('user', _id)
+  }
+
   return (
     <div className="container">
       <img src={logo} alt="Logo" />
 
       <div className="content">
-        <p>Offer <strong>Spots</strong> to Developers and find <strong>talents</strong> for your company</p>
-        <form>
-          <label htmlFor="email">EMAIL *</label>
-          <input id="email" type="email" placeholder="Your best email"></input>
+        <AppRoutes />
 
-          <button className="btn" type='submit'>Submit</button>
-        </form>
       </div>
     </div>
   )
