@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native"
+import { StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from "react-native"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { MaterialIcons } from '@expo/vector-icons'
 import { SafeAreaView } from "react-native-safe-area-context"
+import socketio from 'socket.io-client'
 
 import SpotList from "../components/SpotList"
 import logo from "../assets/logo.png"
 
 function List({ navigation }) {
     const [techs, setTechs] = useState([])
+
+    useEffect(() => {
+        AsyncStorage.getItem('user').then(user_id => {
+            const socket = socketio('http://192.168.1.175:3333', {
+                query: { user_id }
+            })
+            socket.on('booking_response', booking => {
+                // booking.date is usually in ISO format: "2025-09-21T18:25:43.000Z"
+                const formattedDate = booking.date ? booking.date.slice(0, 10) : ''
+                Alert.alert(
+                    `Your booking at ${booking.spot.company} on ${formattedDate} was ${booking.approved ? 'approved' : 'rejected'}.`
+                )
+            })
+        })
+    }, [])
 
     useEffect(() => {
         AsyncStorage.getItem('techs').then(storagedTechs => {
