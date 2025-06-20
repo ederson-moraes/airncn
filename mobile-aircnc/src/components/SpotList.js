@@ -4,7 +4,7 @@ import api from '../services/api'
 
 function getImageUrl(url) {
     // Replace 'localhost' with your machine's IP address
-    return url.replace('localhost', '192.168.1.168') // <-- use your actual IP
+    return url.replace('localhost', '192.168.1.175') // <-- use your actual IP
 }
 
 export default function SpotList({ tech, navigation }) {
